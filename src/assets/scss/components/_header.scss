@@ -1,0 +1,18 @@
+.header {
+    display: block;
+    flex-direction: column;
+    height: 60vh;
+    width: 100%;
+    background-color: $header-color;
+    padding: 3rem; 
+    .hero-image__wrapper{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 4rem;
+        .hero-image{
+            max-width: 25%;
+        }
+    }
+  
+}
