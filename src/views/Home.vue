@@ -1,12 +1,27 @@
 <template>
   <div class="home">
     <Header @emitting="getSearchValue" />
-    <div :class="home - content">
+    <div class="home-content">
       <div class="search-result" v-if="searching"></div>
       <div class="home-content__wrapper" v-else>
-        <div class="characters"></div>
-        <div class="locations"></div>
-        <div class="episodes"></div>
+        <div class="items">
+          <h1 class="items-title">Popular Characters</h1>
+          <div class="underline"></div>
+          <Characters :characters="characters" />
+          <router-link to="/characters"> <MoreButton /> </router-link>
+        </div>
+        <div class="items">
+          <h1 class="items-title">Popular Locations</h1>
+          <div class="underline"></div>
+          <Locations :locations="locations" />
+          <router-link to="/locations"> <MoreButton /> </router-link>
+        </div>
+        <div class="items">
+          <h1 class="items-title">Popular Episodess</h1>
+          <div class="underline"></div>
+          <Episodes :episodes="episodes" />
+          <router-link to="/episodes"> <MoreButton /> </router-link>
+        </div>
       </div>
     </div>
   </div>
@@ -16,6 +31,7 @@
 // @ is an alias to /src
 // import  from '@/components/'
 import http from "@/utils/service";
+
 export default {
   name: "Home",
   data() {
@@ -27,66 +43,87 @@ export default {
       locationsResult: [],
       charactersResult: [],
       episodesResult: [],
-      searching: false
+      searching: false,
+      isLoading: true
     };
   },
   components: {
-    Header: () => import("@/components/Header.vue")
-  },
-  async beforeMount() {
-    //get  data for landing page
-    http
-      .all(
-        await http.get("/character/"),
-        await http.get("/location/"),
-        await http.get("/episode/")
-      )
-      .then(
-        http.spread((characters, locations, episodes) => {
-          // strip out unwanted data and reduce response to first 6 objects
-
-          const popularCharacters = characters.data.results;
-          this.characters = popularCharacters.splice(6);
-
-          const popularLocations = locations.data.results;
-          this.locations = popularLocations.splice(6);
-
-          const popularEpisodes = episodes.data.results;
-          this.episodes = popularEpisodes.splice(6);
-
-          console.log(this.episodes, this.characters, this.locations);
-        })
-      )
-      .catch(err => {
-        console.log(err);
-      });
+    Header: () => import("@/components/Header.vue"),
+    Characters: () => import("@/components/CharacterCard.vue"),
+    Locations: () => import("@/components/LocationCard"),
+    Episodes: () => import("@/components/EpisodeCard.vue"),
+    MoreButton: () => import("@/components/MoreButton.vue")
   },
   methods: {
+    getData: async function() {
+      await Promise.all([
+        http.get("/character/"),
+        http.get("/location/"),
+        http.get("/episode/")
+      ])
+        .then(response => {
+          // strip out unwanted data and reduce response to first 6 objects
+          // console.log(response)
+
+          const [characters, locations, episodes] = response;
+          console.log(response);
+          const popularCharacters = characters.data.results;
+          popularCharacters.splice(6);
+          this.characters = popularCharacters;
+
+          const popularLocations = locations.data.results;
+          popularLocations.splice(6);
+          this.locations = popularLocations;
+
+          const popularEpisodes = episodes.data.results;
+          popularEpisodes.splice(6);
+          this.episodes = popularEpisodes;
+
+          this.isLoading = false;
+
+          console.log(this.characters, this.episodes, this.locations);
+        })
+        .catch((charactersErr, locationsErr, episodesErr) => {
+          console.log(charactersErr, locationsErr, episodesErr);
+        });
+    },
     makeSearchRequest: async function() {
       this.searching = true;
       try {
-        const locationSearchResponse = await http.get(
-          `/location/?name=${this.searchItem}`
-        );
-        // const characterSearchResponse = await http.get(
-        //   `/episode/?name=${this.searchItem}`
-        // );
-        // const episodeSearchResponse = await http.get(
-        //   `/character/?name=${this.searchItem}`
-        // );
-        console.log(
-          locationSearchResponse
-          // characterSearchResponse,
-          // episodeSearchResponse
-        );
+        await Promise.all([
+          await http.get(`/character/?name=${this.searchItem}`),
+          await http.get(`/location/?name=${this.searchItem}`),
+          await http.get(`/episode/?name=${this.searchItem}`)
+        ]).then(response => {
+          const [
+            locationResponse,
+            characterResponse,
+            episodeResponse
+          ] = response;
+          const locationSearchResponse = locationResponse.data.results;
+          const characterSearchResponse = characterResponse.data.results;
+          const episodeSearchResponse = episodeResponse.data.results;
+          console.log(
+            locationSearchResponse,
+            characterSearchResponse,
+            episodeSearchResponse
+          );
+        });
       } catch (error) {
-        console.error(error);
+        //  if (error.status === 404) {
+        //       console.log('not found')
+        //     }
+        console.log(error);
       }
     },
     getSearchValue: function(searchValue) {
       this.searchItem = searchValue;
       this.makeSearchRequest();
     }
+  },
+  mounted() {
+    //get  data for landing page
+    this.getData();
   }
 };
 </script>

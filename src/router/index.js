@@ -5,9 +5,12 @@ import Home from "../views/Home.vue";
 Vue.use(VueRouter);
 
 // import components
-const Characters = () => import("@/views/Characters.vue");
-const Locations = () => import("@/views/Locations.vue");
-const Episodes = () => import("@/views/Episodes.vue");
+const CharactersView = () => import("@/views/CharactersView.vue");
+const LocationsView = () => import("@/views/LocationsView.vue");
+const EpisodesView = () => import("@/views/EpisodesView.vue");
+const Character = () => import("@/views/Character");
+const Location = () => import("@/views/Location");
+const Episode = () => import("@/views/Episode");
 
 const routes = [
   {
@@ -18,33 +21,42 @@ const routes = [
   {
     path: "/characters",
     name: "Characters",
-    component: Characters
+    component: CharactersView
   },
   {
     path: "/episodes",
     name: "Episodes",
-    component: Episodes
+    component: EpisodesView
   },
   {
     path: "/locations",
     name: "Locations",
-    component: Locations
+    component: LocationsView
+  },
+  {
+    path: "/characters/:id",
+    name: "character",
+    component: Character,
+    props: true
+  },
+  {
+    path: "/episodes/:id",
+    name: "episode",
+    component: Episode
+  },
+  {
+    path: "/locations/:id",
+    name: "location",
+    component: Location
+  },
+  {
+    path: "/404"
+    // component: NotFound,
+  },
+  {
+    path: "*",
+    redirect: "/404"
   }
-  // {
-  //   path: '/characters/:id',
-  //   name: '',
-  //   component: ,
-  // },
-  // {
-  //   path: '/episodes/:id',
-  //   name: '',
-  //   component: ,
-  // },
-  // {
-  //   path: '/locations/:id',
-  //   name: '',
-  //   component: ,
-  // },  ,
 ];
 
 const router = new VueRouter({

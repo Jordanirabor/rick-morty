@@ -5,7 +5,7 @@
         <font-awesome-icon
           :icon="['fas', 'search']"
           class="search-icon"
-          size="2x"
+          size="lg"
         />
       </div>
       <div class="search">

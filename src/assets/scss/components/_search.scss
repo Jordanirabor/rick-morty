@@ -1,12 +1,13 @@
 .search-wrapper{
     width:100%;
-    margin-top: 5rem;
+    margin: 5rem 0 2rem 0;
     display: flex;
     justify-content: center;
    .search-container{
         display: grid;
-        grid-template-columns: 13% 87%;
-        width: 60%;
+        grid-template-columns: 12% 88%;
+        width: 85%;
+        max-width: 100%;
         background: white;
         border-radius: .4em;
         .search-icon__container{
@@ -14,15 +15,15 @@
             justify-content: flex-end;
             .search-icon{
                 margin-top: 2rem;
+                margin-left:1em ;
             }
         }
         .search{
-            // margin-left: 2em;
+           
             .search-field{
-                width: 80%;
                 padding: 2rem;
                 border: none;
-               
+                width: 85%;
                 font-size: 2rem;
                 font-weight: bold;
                 &:focus{

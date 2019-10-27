@@ -1,3 +1,29 @@
 .home{
     width: 100%;
 }
+.home-content{
+     padding: 0 1em;
+}
+.home-content__wrapper {
+    display: flex;
+    flex-direction: column;
+    // justify-content: center;
+  
+    // flex-wrap: wrap;
+}
+.items{
+    margin-top: 3em;
+    display: flex;
+    flex-direction: column;
+}
+.items-title{
+    text-align: center;
+    font-size: $top-heading;
+    
+}
+.underline{
+    align-self: center;
+    width: 10%;
+    background-color: #000;
+    height: .4em;
+}
