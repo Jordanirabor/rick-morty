@@ -7,20 +7,35 @@
         <div class="items">
           <h1 class="items-title">Popular Characters</h1>
           <div class="underline"></div>
+          <div class="loading" v-if="isLoading">
+            <Loader />
+          </div>
           <Characters :characters="characters" />
-          <router-link to="/characters"> <MoreButton /> </router-link>
+          <router-link to="/characters">
+            <MoreButton />
+          </router-link>
         </div>
         <div class="items">
           <h1 class="items-title">Popular Locations</h1>
           <div class="underline"></div>
+          <div class="loading" v-if="isLoading">
+            <Loader />
+          </div>
           <Locations :locations="locations" />
-          <router-link to="/locations"> <MoreButton /> </router-link>
+          <router-link to="/locations">
+            <MoreButton />
+          </router-link>
         </div>
         <div class="items">
           <h1 class="items-title">Popular Episodess</h1>
           <div class="underline"></div>
+          <div class="loading" v-if="isLoading">
+            <Loader />
+          </div>
           <Episodes :episodes="episodes" />
-          <router-link to="/episodes"> <MoreButton /> </router-link>
+          <router-link to="/episodes">
+            <MoreButton />
+          </router-link>
         </div>
       </div>
     </div>
@@ -47,12 +62,19 @@ export default {
       isLoading: true
     };
   },
+  props: {
+    q: {
+      type: String,
+      default: null
+    }
+  },
   components: {
     Header: () => import("@/components/Header.vue"),
     Characters: () => import("@/components/CharacterCard.vue"),
     Locations: () => import("@/components/LocationCard"),
     Episodes: () => import("@/components/EpisodeCard.vue"),
-    MoreButton: () => import("@/components/MoreButton.vue")
+    MoreButton: () => import("@/components/MoreButton.vue"),
+    Loader: () => import("@/components/Loader.vue")
   },
   methods: {
     getData: async function() {
@@ -96,18 +118,33 @@ export default {
           await http.get(`/episode/?name=${this.searchItem}`)
         ]).then(response => {
           const [
+             characterResponse,
             locationResponse,
-            characterResponse,
             episodeResponse
           ] = response;
           const locationSearchResponse = locationResponse.data.results;
+          locationSearchResponse.splice(6);
+          this.locations = locationSearchResponse;
+
           const characterSearchResponse = characterResponse.data.results;
+
+          characterSearchResponse.splice(6);
+          this.characters = characterSearchResponse;
+
+
           const episodeSearchResponse = episodeResponse.data.results;
+          episodeSearchResponse.splice(6);
+          this.episodes = episodeSearchResponse;
+
           console.log(
             locationSearchResponse,
             characterSearchResponse,
             episodeSearchResponse
           );
+          this.$router.push({
+            name: "search",
+            query: { q: this.searchItem }
+          });
         });
       } catch (error) {
         //  if (error.status === 404) {
@@ -115,6 +152,7 @@ export default {
         //     }
         console.log(error);
       }
+      this.searching = false;
     },
     getSearchValue: function(searchValue) {
       this.searchItem = searchValue;

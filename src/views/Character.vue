@@ -1,7 +1,9 @@
 <template>
-  <div>
-      {{character.image}}
-    
+  <div class="character-detail__wrapper">
+    <img :src="character.image" alt="" srcset="" />
+
+    {{ character.image }}
+
     {{ character.name }}
   </div>
 </template>
@@ -10,8 +12,7 @@ export default {
   name: "Character",
   props: ["character"],
   data() {
-    return {
-    };
+    return {};
   },
   mounted: function() {
     this.getDetails();

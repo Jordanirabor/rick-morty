@@ -1,20 +1,29 @@
 <template>
-  <div class="card-wrapper">
-    <div v-for="episode in episodes" :key="episode.id" class="card-content">
-      <div class="card-image">
-        <img :src="episode.image" alt="" />
+  <div class="detail-card__wrapper">
+    <article v-for="episode in episodes" :key="episode.id" class="detail-card__content">
+      <div class="detail-description__wrapper">
+        <div class="detail-card__description">
+          <h3 class="detail-name">{{ episode.name }}</h3>
+          <div>{{ episode.episode }}</div>
+          <div>{{ episode.air_date}}</div>
+        </div>
       </div>
-      <h3 class="card-name">
-        {{ episode.name }}
-      </h3>
-      <div class="card-description"></div>
-    </div>
+      <router-link
+        :to="{
+            name: 'episode',
+            params: { id: episode.id, episode: episode }
+          }"
+      >
+        <Button />
+      </router-link>
+    </article>
   </div>
 </template>
 <script>
 export default {
   name: "Episodes",
-  props: ["episodes"]
+  props: ["episodes"],
+  components: { Button: () => import("@/components/Button") }
 };
 </script>
 <style lang="scss"></style>

@@ -1,15 +1,15 @@
 <template>
-  <div class="card-wrapper">
+  <div class="character-card__wrapper">
     <article
       v-for="character in characters"
       :key="character.id"
-      class="card-content"
+      class="character-card__content"
     >
-      <div class="card-image">
+      <div class="character-image">
         <img :src="character.image" alt="" />
       </div>
-      <div class="card-description__wrapper">
-        <h2 class="card-name">
+      <div class="character-description__wrapper">
+        <h2 class="character-name">
           {{ character.name }}
         </h2>
         <div class="description">
@@ -20,7 +20,7 @@
         <router-link
           :to="{
             name: 'character',
-            params: { id:character.id, character: character }
+            params: { id: character.id, character: character }
           }"
         >
           <Button
@@ -33,13 +33,9 @@
 export default {
   name: "Characters",
   data() {
-    return {
-    };
+    return {};
   },
   props: ["characters"],
-  // mounted() {
-  //   this.characterData = character
-  // },
   components: {
     Button: () => import("@/components/Button")
   }

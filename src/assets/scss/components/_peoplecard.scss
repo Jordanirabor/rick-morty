@@ -1,23 +1,24 @@
-.card-wrapper{
+.character-card__wrapper{
     width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: center;
     flex-wrap: wrap;
+   
   
 
-    .card-content{
+    .character-card__content{
         margin: 3em 2em;
         background-color: $primary-color;
     }
-    .card-name{
+    .character-name{
         font-size: $base-heading;
         font-weight: 900;
         margin-top: .5em;
         margin-bottom: .4em;
         text-align: center;
     }
-    .card-description__wrapper{
+    .character-description__wrapper{
         margin-left: .5em;
     }
 }
