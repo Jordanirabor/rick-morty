@@ -12,16 +12,20 @@
     margin-top: 4rem;
 }
 
-@media screen and (max-width: 1023px){
+@media screen and (min-width: 732px) and (max-width: 811px)  {
     .header{
-        height: 50vh;
+        height: 73vh;
+        .hero-image__wrapper{
+            width: 90%;
+        }
     }
     .hero-image{
         width: 60%;
     }
 }
 
-@media screen and (min-width: 1024px){
+
+@media screen and (min-width: 1025px){
     .header {
     height: 65vh;
     }

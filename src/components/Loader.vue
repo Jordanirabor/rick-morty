@@ -6,7 +6,6 @@ export default {};
 </script>
 <style lang="scss" scoped>
 .loading {
-  
   border: 1rem solid #f3f3f3; /* Light grey */
   border-top: 1rem solid #3498db; /* Blue */
   border-radius: 100%;

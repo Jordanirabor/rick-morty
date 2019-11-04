@@ -1,0 +1,17 @@
+.detail-wrapper{
+    width: 100%;
+    padding: 1em 4em;
+    background-color: $primary-color;
+    h3{
+        font-weight: 900;
+        font-size: 2em;
+        margin-bottom: 1em;
+    }   
+    .detail-wrapper__description{
+        margin-bottom: 1.2em;
+        span{
+            font-weight: 900;
+            font-size: 1.3em;
+        }
+    }
+}

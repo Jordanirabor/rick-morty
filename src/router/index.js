@@ -2,15 +2,15 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 
-Vue.use( VueRouter );
+Vue.use(VueRouter);
 
 // import components
-const CharactersView = () => import( "@/views/CharactersView.vue" );
-const LocationsView = () => import( "@/views/LocationsView.vue" );
-const EpisodesView = () => import( "@/views/EpisodesView.vue" );
-const Character = () => import( "@/views/Character" );
-const Location = () => import( "@/views/Location" );
-const Episode = () => import( "@/views/Episode" );
+const CharactersView = () => import("@/views/CharactersView.vue");
+const LocationsView = () => import("@/views/LocationsView.vue");
+const EpisodesView = () => import("@/views/EpisodesView.vue");
+const Character = () => import("@/views/Character");
+const Location = () => import("@/views/Location");
+const Episode = () => import("@/views/Episode");
 
 const routes = [
   {
@@ -19,10 +19,10 @@ const routes = [
     component: Home
   },
   {
-    path: '/search',
-    name: 'search',
+    path: "/search",
+    name: "search",
     component: Home,
-    props: ( params ) => ( { q: params.query.q } )
+    props: params => ({ q: params.query.q })
   },
   {
     path: "/characters",
@@ -67,10 +67,10 @@ const routes = [
   }
 ];
 
-const router = new VueRouter( {
+const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes
-} );
+});
 
 export default router;

@@ -1,3 +1,17 @@
+@media screen and (min-width:731px){
+.detail-card__wrapper{
+    .detail-card__content{
+           width: 28%;
+    }
+}
+}
+@media screen and (max-width:730px){
+    .detail-card__wrapper{
+        .detail-card__content{
+            width: 80% ;
+        }
+    }
+}
 .detail-card__wrapper{
     width: 100%;
     display: flex;
@@ -6,7 +20,7 @@
     flex-wrap: wrap;
 
     .detail-card__content{
-        width: 25%;
+     
         margin: 3em 2em;
         padding: 2rem  2rem 0 2rem;
         background-color: $primary-color;

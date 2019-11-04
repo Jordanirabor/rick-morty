@@ -27,7 +27,7 @@
           </router-link>
         </div>
         <div class="items">
-          <h1 class="items-title">Popular Episodess</h1>
+          <h1 class="items-title">Popular Episodes</h1>
           <div class="underline"></div>
           <div class="loading" v-if="isLoading">
             <Loader />
@@ -39,6 +39,7 @@
         </div>
       </div>
     </div>
+    <Footer />
   </div>
 </template>
 
@@ -74,7 +75,8 @@ export default {
     Locations: () => import("@/components/LocationCard"),
     Episodes: () => import("@/components/EpisodeCard.vue"),
     MoreButton: () => import("@/components/MoreButton.vue"),
-    Loader: () => import("@/components/Loader.vue")
+    Loader: () => import("@/components/Loader.vue"),
+    Footer: () => import("@/components/Footer.vue")
   },
   methods: {
     getData: async function() {
@@ -118,7 +120,7 @@ export default {
           await http.get(`/episode/?name=${this.searchItem}`)
         ]).then(response => {
           const [
-             characterResponse,
+            characterResponse,
             locationResponse,
             episodeResponse
           ] = response;
@@ -130,7 +132,6 @@ export default {
 
           characterSearchResponse.splice(6);
           this.characters = characterSearchResponse;
-
 
           const episodeSearchResponse = episodeResponse.data.results;
           episodeSearchResponse.splice(6);
