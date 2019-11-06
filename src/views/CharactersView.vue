@@ -12,6 +12,7 @@
         <Characters :characters="characters" />
       </div>
     </div>
+    <Pagination :pageInfo="pageInfo" @changing="getAction" />
   </div>
 </template>
 <script>
@@ -21,36 +22,68 @@ export default {
   components: {
     Loader: () => import("@/components/Loader.vue"),
     Header: () => import("@/components/Header"),
-    Characters: () => import('@/components/CharacterCard.vue')
+    Characters: () => import("@/components/CharacterCard.vue"),
+    Pagination: () => import("@/components/PaginationButton.vue")
   },
   data() {
     return {
       isLoading: true,
       characters: [],
       searching: false,
+      pageInfo: {
+        total: "",
+        next: "",
+        pages: "",
+        previous: ""
+      },
       currentPage: 1,
-      perPage: 0,
-
-
+      toast: {
+        show: false,
+        context: "",
+        message: ""
+      }
     };
   },
   methods: {
     getData: async function() {
       http
-        .get("/character/")
+        .get(
+          `https://rickandmortyapi.com/api/character/?page=${this.currentPage}`
+        )
         .then(response => {
-          // strip out unwanted data and reduce response to first 6 objects
           // console.log(response)
-          this.isLoading=false
+          this.isLoading = false;
           this.characters = response.data.results;
-          console.log(response);
-
+          console.log(response.data.info);
+          this.pageInfo = response.data.info;
+          console.log(this.pageInfo);
         })
         .catch();
+    },
+    getAction: function(value){
+      this.changePage(value)
+    },
+    changePage: function(value) {
+      switch (value) {
+        case "next":
+          this.currentPage = this.currentPage + 1;
+          console.log(this.currentPage);
+          break;
+        case "previous":
+          this.currentPage = this.currentPage - 1;
+          break;
+        default:
+          this.currentPage = value;
+      }
     }
   },
   mounted() {
-    this.getData()
+    
+    this.getData();
+  },
+  updated() {
+ 
+  this.getData();
   },
 };
 </script>

@@ -55,8 +55,8 @@ export default {
   },
   methods: {
     getDetails() {
-      console.log(this.$route.character);
-      console.log(this.$route.params);
+      // console.log(this.$route.character);
+      // console.log(this.$route.params);
     }
   }
 };

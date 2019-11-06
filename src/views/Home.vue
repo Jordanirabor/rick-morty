@@ -60,7 +60,12 @@ export default {
       charactersResult: [],
       episodesResult: [],
       searching: false,
-      isLoading: true
+      isLoading: true,
+      toast: {
+        message: "",
+        context: "",
+        show: false
+      }
     };
   },
   props: {
@@ -90,7 +95,7 @@ export default {
           // console.log(response)
 
           const [characters, locations, episodes] = response;
-          console.log(response);
+          // console.log(response);
           const popularCharacters = characters.data.results;
           popularCharacters.splice(6);
           this.characters = popularCharacters;
@@ -105,10 +110,12 @@ export default {
 
           this.isLoading = false;
 
-          console.log(this.characters, this.episodes, this.locations);
+          // console.log(this.characters, this.episodes, this.locations);
         })
-        .catch((charactersErr, locationsErr, episodesErr) => {
-          console.log(charactersErr, locationsErr, episodesErr);
+        .catch(response => {
+          const message = response;
+          this.showToast(message, "error");
+          // console.log(charactersErr, locationsErr, episodesErr);
         });
     },
     makeSearchRequest: async function() {
@@ -137,11 +144,12 @@ export default {
           episodeSearchResponse.splice(6);
           this.episodes = episodeSearchResponse;
 
-          console.log(
-            locationSearchResponse,
-            characterSearchResponse,
-            episodeSearchResponse
-          );
+          // console.log(
+          //   locationSearchResponse,
+          //   characterSearchResponse,
+          //   episodeSearchResponse
+          // );
+          this.showToast("success");
           this.$router.push({
             name: "search",
             query: { q: this.searchItem }
@@ -151,10 +159,18 @@ export default {
         //  if (error.status === 404) {
         //       console.log('not found')
         //     }
-        console.log(error);
+        //console.log(error);
+        this.showToast();
       }
       this.searching = false;
     },
+    showToast(message, context) {
+      this.toast = { message, context, show: true };
+      setTimeout(() => {
+        this.toast = { message: "", context: "", show: false };
+      }, 3000);
+    },
+
     getSearchValue: function(searchValue) {
       this.searchItem = searchValue;
       this.makeSearchRequest();

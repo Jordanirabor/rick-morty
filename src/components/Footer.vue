@@ -1,6 +1,6 @@
 <template>
   <div class="footer">
-     <h2>  Built by Jola.🤷🏾‍♂️</h2>
+    <h2>Built by Jola.🤷🏾‍♂️</h2>
   </div>
 </template>
 <style lang="scss" scoped>
@@ -12,9 +12,8 @@
   height: 15vh;
   background-color: #2f9331;
   margin-top: 2rem;
-  h2{
-      text-align: center;
-   
+  h2 {
+    text-align: center;
   }
 }
 </style>
