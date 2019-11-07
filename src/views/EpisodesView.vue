@@ -1,7 +1,158 @@
 <template>
-  <div></div>
+  <div class>
+    <Header  @emitting="getSearchValue"  />
+    <div class="toast-wrapper">
+      <Toast :message="toast.message" :context="toast.context" v-if="toast.show" />
+    </div>
+    <div class="home-content__wrapper" >
+      <div class="items">
+        <h1 class="items-title">Episodes</h1>
+
+        <div class="underline"></div>
+        <div class="loading" v-if="isLoading">
+          <Loader />
+        </div>
+        <Episodes :episodes="episodes" />
+      </div>
+    </div>
+    <div class="paginate-info">
+      <span>{{ from }} - {{ to }} of {{ pageInfo.count }}</span>
+      <Pagination :pageInfo="pageInfo" @changing="getAction" />
+    </div>
+
+    <Footer />
+  </div>
 </template>
 <script>
-export default {};
+
+import http from "@/utils/service";
+export default {
+  name: "EpisodeView",
+  components: {
+    Loader: () => import("@/components/Loader.vue"),
+    Header: () => import("@/components/Header"),
+    Episodes: () => import("@/components/EpisodeCard.vue"),
+    Pagination: () => import("@/components/PaginationButton.vue"),
+    Toast: () => import("@/components/Toast.vue"),
+    Footer: () => import("@/components/Footer.vue")
+  },
+  data() {
+    return {
+      searchItem: "",
+      isLoading: true,
+      episodes: [],
+      totalViewed: [],
+      pageInfo: {},
+      currentPage: 1,
+      perPage: 20,
+      from: 1,
+      to: "",
+      toast: {
+        show: false,
+        context: "",
+        message: ""
+      }
+    };
+  },
+  props: {
+    q: {
+      type: String,
+      default: null
+    }
+  },
+  methods: {
+    showToast(message, context) {
+      this.toast = { message, context, show: true };
+      setTimeout(() => {
+        this.toast = { message: "", context: "", show: false };
+      }, 3000);
+    },
+    getAction: function(value) {
+      this.changePage(value);
+    },
+    makeSearchRequest: async function() {
+      this.isLoading = true;
+      try {
+        await Promise.all([
+          await http.get(`/episode/?name=${this.searchItem}`),
+        ]).then(response => {
+          const [
+            episodeResponse,
+          ] = response;
+
+          const episodeSearchResponse = episodeResponse.data.results;
+          this.pageInfo = episodeResponse.data.info;
+
+          this.episodes = episodeSearchResponse;
+          this.showToast("Results found", "success");
+        });
+      } catch (error) {
+        this.showToast(error, "error");
+      }
+      this.isLoading = false;
+    },
+    changePage: async function(value) {
+      switch (value) {
+        case "next":
+          this.currentPage = this.currentPage + 1;
+          this.from = this.to += 1;
+          this.to = this.to += this.perPage - 1;
+          if (this.to > this.pageInfo.count) {
+            this.from = this.from;
+            this.to = this.pageInfo.count;
+            this.showToast("End Of Info", "error");
+          }
+          break;
+        case "previous":
+          this.currentPage = this.currentPage - 1;
+          this.from = this.from - this.perPage;
+          this.to = this.to - this.perPage;
+
+          if (this.currentPage < 1) {
+            this.from = 1;
+            this.to = this.perPage;
+            this.showToast("Beginning Of Info", "error");
+          }
+          break;
+        default:
+          this.currentPage = value;
+      }
+      http
+        .get(
+          `https://rickandmortyapi.com/api/episode/?page=${this.currentPage}`
+        )
+        .then(response => {
+          this.isLoading = false;
+          this.episodes = response.data.results;
+          this.totalViewed.push(...this.episodes);
+          this.pageInfo = response.data.info;
+        })
+        .catch(error => {
+          this.showToast(error, "error");
+        });
+    },
+
+    getSearchValue: function(searchValue) {
+      this.searchItem = searchValue;
+      this.makeSearchRequest();
+    }
+  },
+  async mounted() {
+    http
+      .get(`https://rickandmortyapi.com/api/episode`)
+      .then(response => {
+        this.isLoading = false;
+        this.episodes = response.data.results;
+        this.totalViewed.push(...this.episodes);
+        const info = response.data.info;
+        this.pageInfo = { ...info };
+        this.to = this.perPage;
+      })
+      .catch(error => {
+        this.showToast(error, "error");
+      });
+  },
+  computed: {}
+};
 </script>
 <style lang="scss" scoped></style>

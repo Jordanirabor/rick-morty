@@ -1,7 +1,158 @@
 <template>
-  <div></div>
+  <div class>
+    <Header  @emitting="getSearchValue"  />
+    <div class="toast-wrapper">
+      <Toast :message="toast.message" :context="toast.context" v-if="toast.show" />
+    </div>
+    <div class="home-content__wrapper" >
+      <div class="items">
+        <h1 class="items-title"> Locations</h1>
+
+        <div class="underline"></div>
+        <div class="loading" v-if="isLoading">
+          <Loader />
+        </div>
+        <Locations :locations="locations" />
+      </div>
+    </div>
+    <div class="paginate-info">
+      <span>{{ from }} - {{ to }} of {{ pageInfo.count }}</span>
+      <Pagination :pageInfo="pageInfo" @changing="getAction" />
+    </div>
+
+    <Footer />
+  </div>
 </template>
 <script>
-export default {};
+
+import http from "@/utils/service";
+export default {
+  name: "LocationView",
+  components: {
+    Loader: () => import("@/components/Loader.vue"),
+    Header: () => import("@/components/Header"),
+    Locations: () => import("@/components/LocationCard.vue"),
+    Pagination: () => import("@/components/PaginationButton.vue"),
+    Toast: () => import("@/components/Toast.vue"),
+    Footer: () => import("@/components/Footer.vue")
+  },
+  data() {
+    return {
+      searchItem: "",
+      isLoading: true,
+      locations: [],
+      totalViewed: [],
+      pageInfo: {},
+      currentPage: 1,
+      perPage: 20,
+      from: 1,
+      to: "",
+      toast: {
+        show: false,
+        context: "",
+        message: ""
+      }
+    };
+  },
+  props: {
+    q: {
+      type: String,
+      default: null
+    }
+  },
+  methods: {
+    showToast(message, context) {
+      this.toast = { message, context, show: true };
+      setTimeout(() => {
+        this.toast = { message: "", context: "", show: false };
+      }, 3000);
+    },
+    getAction: function(value) {
+      this.changePage(value);
+    },
+    makeSearchRequest: async function() {
+      this.isLoading = true;
+      try {
+        await Promise.all([
+          await http.get(`/location/?name=${this.searchItem}`),
+        ]).then(response => {
+          const [
+            locationResponse,
+          ] = response;
+
+          const locationSearchResponse = locationResponse.data.results;
+          this.pageInfo = locationResponse.data.info;
+
+          this.locations = locationSearchResponse;
+          this.showToast("Results found", "success");
+        });
+      } catch (error) {
+        this.showToast(error, "error");
+      }
+      this.isLoading = false;
+    },
+    changePage: async function(value) {
+      switch (value) {
+        case "next":
+          this.currentPage = this.currentPage + 1;
+          this.from = this.to += 1;
+          this.to = this.to += this.perPage - 1;
+          if (this.to > this.pageInfo.count) {
+            this.from = this.from;
+            this.to = this.pageInfo.count;
+            this.showToast("End Of Info", "error");
+          }
+          break;
+        case "previous":
+          this.currentPage = this.currentPage - 1;
+          this.from = this.from - this.perPage;
+          this.to = this.to - this.perPage;
+
+          if (this.currentPage < 1) {
+            this.from = 1;
+            this.to = this.perPage;
+            this.showToast("Beginning Of Info", "error");
+          }
+          break;
+        default:
+          this.currentPage = value;
+      }
+      http
+        .get(
+          `https://rickandmortyapi.com/api/location/?page=${this.currentPage}`
+        )
+        .then(response => {
+          this.isLoading = false;
+          this.locations = response.data.results;
+          this.totalViewed.push(...this.locations);
+          this.pageInfo = response.data.info;
+        })
+        .catch(error => {
+          this.showToast(error, "error");
+        });
+    },
+
+    getSearchValue: function(searchValue) {
+      this.searchItem = searchValue;
+      this.makeSearchRequest();
+    }
+  },
+  async mounted() {
+    http
+      .get(`https://rickandmortyapi.com/api/location`)
+      .then(response => {
+        this.isLoading = false;
+        this.locations = response.data.results;
+        this.totalViewed.push(...this.locations);
+        const info = response.data.info;
+        this.pageInfo = { ...info };
+        this.to = this.perPage;
+      })
+      .catch(error => {
+        this.showToast(error, "error");
+      });
+  },
+  computed: {}
+};
 </script>
 <style lang="scss" scoped></style>

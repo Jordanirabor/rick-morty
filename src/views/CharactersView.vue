@@ -80,6 +80,7 @@ export default {
           ] = response;
 
           const characterSearchResponse = characterResponse.data.results;
+          this.pageInfo = characterResponse.data.info;
 
           this.characters = characterSearchResponse;
           this.showToast("Results found", "success");
@@ -124,8 +125,6 @@ export default {
           this.characters = response.data.results;
           this.totalViewed.push(...this.characters);
           this.pageInfo = response.data.info;
-          console.log(this.totalViewed);
-          console.log(this.totalViewed.length);
         })
         .catch(error => {
           this.showToast(error, "error");
