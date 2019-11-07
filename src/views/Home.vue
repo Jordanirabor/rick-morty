@@ -2,6 +2,13 @@
   <div class="home">
     <Header @emitting="getSearchValue" />
     <div class="home-content">
+      <div class="toast-wrapper">
+        <Toast
+          :message="toast.message"
+          :context="toast.context"
+          v-if="toast.show"
+        />
+      </div>
       <div class="search-result" v-if="searching"></div>
       <div class="home-content__wrapper" v-else>
         <div class="items">
@@ -59,7 +66,12 @@ export default {
       locationsResult: [],
       charactersResult: [],
       episodesResult: [],
-      searching: false,
+      searching: false,  props: {
+    q: {
+      type: String,
+      default: null
+    }
+  },
       isLoading: true,
       toast: {
         message: "",
@@ -81,6 +93,7 @@ export default {
     Episodes: () => import("@/components/EpisodeCard.vue"),
     MoreButton: () => import("@/components/MoreButton.vue"),
     Loader: () => import("@/components/Loader.vue"),
+    Toast: () => import("@/components/Toast.vue"),
     Footer: () => import("@/components/Footer.vue")
   },
   methods: {
@@ -92,10 +105,10 @@ export default {
       ])
         .then(response => {
           // strip out unwanted data and reduce response to first 6 objects
-          // console.log(response)
+   
 
           const [characters, locations, episodes] = response;
-          // console.log(response);
+
           const popularCharacters = characters.data.results;
           popularCharacters.splice(6);
           this.characters = popularCharacters;
@@ -109,13 +122,11 @@ export default {
           this.episodes = popularEpisodes;
 
           this.isLoading = false;
-
-          // console.log(this.characters, this.episodes, this.locations);
         })
         .catch(response => {
           const message = response;
           this.showToast(message, "error");
-          // console.log(charactersErr, locationsErr, episodesErr);
+
         });
     },
     makeSearchRequest: async function() {
@@ -143,24 +154,14 @@ export default {
           const episodeSearchResponse = episodeResponse.data.results;
           episodeSearchResponse.splice(6);
           this.episodes = episodeSearchResponse;
-
-          // console.log(
-          //   locationSearchResponse,
-          //   characterSearchResponse,
-          //   episodeSearchResponse
-          // );
-          this.showToast("success");
+          this.showToast("Results found","success");
           this.$router.push({
             name: "search",
             query: { q: this.searchItem }
           });
         });
       } catch (error) {
-        //  if (error.status === 404) {
-        //       console.log('not found')
-        //     }
-        //console.log(error);
-        this.showToast();
+        this.showToast(error, "error");
       }
       this.searching = false;
     },

@@ -1,19 +1,12 @@
 <template>
   <header class="header">
     <div>
-      <img
-        :src="require('@/assets/images/rickmorty-logo.png')"
-        alt=""
-        srcset=""
-      />
+      <a href="/" class="logo-link">
+        <img :src="require('@/assets/images/rickmorty-logo.png')" alt srcset  />
+      </a>
     </div>
     <div class="hero-image__wrapper">
-      <img
-        class="hero-image"
-        :src="require('@/assets/images/rickmort-hero.png')"
-        alt=""
-        srcset=""
-      />
+      <img class="hero-image" :src="require('@/assets/images/rickmort-hero.png')" alt srcset />
     </div>
     <Search @searching="dispatch" />
   </header>

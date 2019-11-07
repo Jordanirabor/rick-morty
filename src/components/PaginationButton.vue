@@ -3,12 +3,10 @@
     <div class="pagination-info"></div>
     <div class="pagination-buttons__wrapper">
       <button class="paginate" @click="previousPage()">
-        <!-- :disabled="isPreviousButtonDisabled" -->
         &#60;
       </button>
 
       <button class="paginate" @click="nextPage()">
-        <!-- :disabled="isNextButtonDisabled" -->
         &#62;
       </button>
     </div>
@@ -22,27 +20,8 @@ export default {
       previous: "previous"
     };
   },
-  props: {
-    // currentPage: {
-    //   type: Number,
-    //   required: true
-    // },
-    // total: {
-    //   type: Number,
-    //   required: true
-    // },
-    // disabled: {
-    //   type: Boolean,
-    //   default: false
-    // }
-  },
+  props: {},
   methods: {
-    // isPreviousButtonDisabled() {
-    //   return this.currentPage === 1;
-    // },
-    // isNextButtonDisabled() {
-    //   return this.currentPage === 25;
-    // },
     nextPage() {
       this.$emit("changing", this.next);
     },
