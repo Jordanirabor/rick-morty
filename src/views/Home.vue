@@ -66,12 +66,7 @@ export default {
       locationsResult: [],
       charactersResult: [],
       episodesResult: [],
-      searching: false,  props: {
-    q: {
-      type: String,
-      default: null
-    }
-  },
+      searching: false, 
       isLoading: true,
       toast: {
         message: "",

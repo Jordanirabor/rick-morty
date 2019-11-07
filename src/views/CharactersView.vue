@@ -1,11 +1,10 @@
 <template>
   <div class>
-    <Header />
+    <Header  @emitting="getSearchValue"  />
     <div class="toast-wrapper">
       <Toast :message="toast.message" :context="toast.context" v-if="toast.show" />
     </div>
-    <div class="search-result" v-if="searching"></div>
-    <div class="home-content__wrapper" v-else>
+    <div class="home-content__wrapper" >
       <div class="items">
         <h1 class="items-title">Characters</h1>
 
@@ -16,7 +15,7 @@
         <Characters :characters="characters" />
       </div>
     </div>
-    <div>
+    <div class="paginate-info">
       <span>{{ from }} - {{ to }} of {{ pageInfo.count }}</span>
       <Pagination :pageInfo="pageInfo" @changing="getAction" />
     </div>
@@ -38,13 +37,13 @@ export default {
   },
   data() {
     return {
+      searchItem: "",
       isLoading: true,
       characters: [],
-      searching: false,
+      totalViewed: [],
       pageInfo: {},
       currentPage: 1,
       perPage: 20,
-      viewed: 20,
       from: 1,
       to: "",
       toast: {
@@ -69,6 +68,26 @@ export default {
     },
     getAction: function(value) {
       this.changePage(value);
+    },
+    makeSearchRequest: async function() {
+      this.isLoading = true;
+      try {
+        await Promise.all([
+          await http.get(`/character/?name=${this.searchItem}`),
+        ]).then(response => {
+          const [
+            characterResponse,
+          ] = response;
+
+          const characterSearchResponse = characterResponse.data.results;
+
+          this.characters = characterSearchResponse;
+          this.showToast("Results found", "success");
+        });
+      } catch (error) {
+        this.showToast(error, "error");
+      }
+      this.isLoading = false;
     },
     changePage: async function(value) {
       switch (value) {
@@ -103,11 +122,19 @@ export default {
         .then(response => {
           this.isLoading = false;
           this.characters = response.data.results;
+          this.totalViewed.push(...this.characters);
           this.pageInfo = response.data.info;
+          console.log(this.totalViewed);
+          console.log(this.totalViewed.length);
         })
         .catch(error => {
           this.showToast(error, "error");
         });
+    },
+
+    getSearchValue: function(searchValue) {
+      this.searchItem = searchValue;
+      this.makeSearchRequest();
     }
   },
   async mounted() {
@@ -116,10 +143,10 @@ export default {
       .then(response => {
         this.isLoading = false;
         this.characters = response.data.results;
+        this.totalViewed.push(...this.characters);
         const info = response.data.info;
         this.pageInfo = { ...info };
         this.to = this.perPage;
-        this.viewed += 20;
       })
       .catch(error => {
         this.showToast(error, "error");
