@@ -1,12 +1,16 @@
 <template>
   <div class>
-    <Header  @emitting="getSearchValue"  />
+    <Header @emitting="getSearchValue" />
     <div class="toast-wrapper">
-      <Toast :message="toast.message" :context="toast.context" v-if="toast.show" />
+      <Toast
+        :message="toast.message"
+        :context="toast.context"
+        v-if="toast.show"
+      />
     </div>
-    <div class="home-content__wrapper" >
+    <div class="home-content__wrapper">
       <div class="items">
-        <h1 class="items-title"> Locations</h1>
+        <h1 class="items-title">Locations</h1>
 
         <div class="underline"></div>
         <div class="loading" v-if="isLoading">
@@ -24,7 +28,6 @@
   </div>
 </template>
 <script>
-
 import http from "@/utils/service";
 export default {
   name: "LocationView",
@@ -74,11 +77,9 @@ export default {
       this.isLoading = true;
       try {
         await Promise.all([
-          await http.get(`/location/?name=${this.searchItem}`),
+          await http.get(`/location/?name=${this.searchItem}`)
         ]).then(response => {
-          const [
-            locationResponse,
-          ] = response;
+          const [locationResponse] = response;
 
           const locationSearchResponse = locationResponse.data.results;
           this.pageInfo = locationResponse.data.info;

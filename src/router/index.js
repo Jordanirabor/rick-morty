@@ -11,6 +11,7 @@ const EpisodesView = () => import("@/views/EpisodesView.vue");
 const Character = () => import("@/views/Character");
 const Location = () => import("@/views/Location");
 const Episode = () => import("@/views/Episode");
+const NotFound = () => import("@/views/404.vue");
 
 const routes = [
   {
@@ -58,8 +59,9 @@ const routes = [
     props: true
   },
   {
-    path: "/404"
-    // component: NotFound,
+    path: "/404",
+    name: "Not Found",
+    component: NotFound
   },
   {
     path: "*",

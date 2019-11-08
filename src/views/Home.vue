@@ -66,7 +66,7 @@ export default {
       locationsResult: [],
       charactersResult: [],
       episodesResult: [],
-      searching: false, 
+      searching: false,
       isLoading: true,
       toast: {
         message: "",
@@ -100,7 +100,6 @@ export default {
       ])
         .then(response => {
           // strip out unwanted data and reduce response to first 6 objects
-   
 
           const [characters, locations, episodes] = response;
 
@@ -121,7 +120,6 @@ export default {
         .catch(response => {
           const message = response;
           this.showToast(message, "error");
-
         });
     },
     makeSearchRequest: async function() {
@@ -149,7 +147,7 @@ export default {
           const episodeSearchResponse = episodeResponse.data.results;
           episodeSearchResponse.splice(6);
           this.episodes = episodeSearchResponse;
-          this.showToast("Results found","success");
+          this.showToast("Results found", "success");
           this.$router.push({
             name: "search",
             query: { q: this.searchItem }

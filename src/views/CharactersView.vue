@@ -1,10 +1,14 @@
 <template>
   <div class>
-    <Header  @emitting="getSearchValue"  />
+    <Header @emitting="getSearchValue" />
     <div class="toast-wrapper">
-      <Toast :message="toast.message" :context="toast.context" v-if="toast.show" />
+      <Toast
+        :message="toast.message"
+        :context="toast.context"
+        v-if="toast.show"
+      />
     </div>
-    <div class="home-content__wrapper" >
+    <div class="home-content__wrapper">
       <div class="items">
         <h1 class="items-title">Characters</h1>
 
@@ -73,11 +77,9 @@ export default {
       this.isLoading = true;
       try {
         await Promise.all([
-          await http.get(`/character/?name=${this.searchItem}`),
+          await http.get(`/character/?name=${this.searchItem}`)
         ]).then(response => {
-          const [
-            characterResponse,
-          ] = response;
+          const [characterResponse] = response;
 
           const characterSearchResponse = characterResponse.data.results;
           this.pageInfo = characterResponse.data.info;

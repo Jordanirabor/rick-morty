@@ -1,10 +1,14 @@
 <template>
   <div class>
-    <Header  @emitting="getSearchValue"  />
+    <Header @emitting="getSearchValue" />
     <div class="toast-wrapper">
-      <Toast :message="toast.message" :context="toast.context" v-if="toast.show" />
+      <Toast
+        :message="toast.message"
+        :context="toast.context"
+        v-if="toast.show"
+      />
     </div>
-    <div class="home-content__wrapper" >
+    <div class="home-content__wrapper">
       <div class="items">
         <h1 class="items-title">Episodes</h1>
 
@@ -24,7 +28,6 @@
   </div>
 </template>
 <script>
-
 import http from "@/utils/service";
 export default {
   name: "EpisodeView",
@@ -74,11 +77,9 @@ export default {
       this.isLoading = true;
       try {
         await Promise.all([
-          await http.get(`/episode/?name=${this.searchItem}`),
+          await http.get(`/episode/?name=${this.searchItem}`)
         ]).then(response => {
-          const [
-            episodeResponse,
-          ] = response;
+          const [episodeResponse] = response;
 
           const episodeSearchResponse = episodeResponse.data.results;
           this.pageInfo = episodeResponse.data.info;

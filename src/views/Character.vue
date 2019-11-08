@@ -54,8 +54,7 @@ export default {
     this.getDetails();
   },
   methods: {
-    getDetails() {
-    }
+    getDetails() {}
   }
 };
 </script>
