@@ -16,7 +16,7 @@
           Meanwhile, why don't you try again by going
         </div>
         <div class="button-wrapper">
-          <input type="button" value="Back Home" class="home-button" />
+         <a href="/">  <input type="button" value="Back Home" class="home-button" /> </a>
         </div>
       </div>
     </div>
