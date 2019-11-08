@@ -7,9 +7,14 @@
       <div class="four-oh-four__content">
         <h1 class="four-oh-four__hero">404</h1>
         <div class="four-oh-four__hero-text">
-          <span>Looks like this page is missing. Don't worry though, our best men are on the case.</span>
+          <span
+            >Looks like this page is missing. Don't worry though, our best men
+            are on the case.</span
+          >
         </div>
-        <div class="hero-small">Meanwhile, why don't you try again by going</div>
+        <div class="hero-small">
+          Meanwhile, why don't you try again by going
+        </div>
         <div class="button-wrapper">
           <input type="button" value="Back Home" class="home-button" />
         </div>
@@ -34,7 +39,7 @@ export default {
   //     // getImage() {
   //     //  for(let i = 0; i < this.images.length; i++){
   //     //     this.currentImage = this.images[i];
-  //     //     
+  //     //
   //     //  }
   //     // }
   //   },
