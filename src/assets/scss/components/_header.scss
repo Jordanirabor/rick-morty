@@ -8,7 +8,6 @@
     cursor: pointer;
 }
 .hero-image__wrapper{
-    width: 100%;
     display: flex;
     justify-content: center;
     margin-top: 4rem;
@@ -18,7 +17,7 @@
     .header{
         height: 73vh;
         .hero-image__wrapper{
-            width: 90%;
+            width: 70%;
         }
     }
     .hero-image{
