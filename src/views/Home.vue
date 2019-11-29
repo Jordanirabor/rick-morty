@@ -53,21 +53,13 @@
 <script>
 // @ is an alias to /src
 // import  from '@/components/'
-import http from "@/utils/service";
-
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "Home",
   data() {
     return {
       searchItem: "",
-      locations: [],
-      characters: [],
-      episodes: [],
-      locationsResult: [],
-      charactersResult: [],
-      episodesResult: [],
       searching: false,
-      isLoading: true,
       toast: {
         message: "",
         context: "",
@@ -92,77 +84,13 @@ export default {
     Footer: () => import("@/components/Footer.vue")
   },
   methods: {
-    getData: async function() {
-      await Promise.all([
-        http.get("/character/"),
-        http.get("/location/"),
-        http.get("/episode/")
-      ])
-        .then(response => {
-          // strip out unwanted data and reduce response to first 6 objects
+    ...mapActions(["fetchData"]),
 
-          const [characters, locations, episodes] = response;
-
-          const popularCharacters = characters.data.results;
-          popularCharacters.splice(6);
-          this.characters = popularCharacters;
-
-          const popularLocations = locations.data.results;
-          popularLocations.splice(6);
-          this.locations = popularLocations;
-
-          const popularEpisodes = episodes.data.results;
-          popularEpisodes.splice(6);
-          this.episodes = popularEpisodes;
-
-          this.isLoading = false;
-        })
-        .catch(response => {
-          const message = response;
-          this.showToast(message, "error");
-        });
-    },
     makeSearchRequest: async function() {
-      this.searching = true;
-      try {
-        await Promise.all([
-          await http.get(`/character/?name=${this.searchItem}`),
-          await http.get(`/location/?name=${this.searchItem}`),
-          await http.get(`/episode/?name=${this.searchItem}`)
-        ]).then(response => {
-          const [
-            characterResponse,
-            locationResponse,
-            episodeResponse
-          ] = response;
-          const locationSearchResponse = locationResponse.data.results;
-          locationSearchResponse.splice(6);
-          this.locations = locationSearchResponse;
-
-          const characterSearchResponse = characterResponse.data.results;
-
-          characterSearchResponse.splice(6);
-          this.characters = characterSearchResponse;
-
-          const episodeSearchResponse = episodeResponse.data.results;
-          episodeSearchResponse.splice(6);
-          this.episodes = episodeSearchResponse;
-          this.showToast("Results found", "success");
-          this.$router.push({
-            name: "search",
-            query: { q: this.searchItem }
-          });
-        });
-      } catch (error) {
-        this.showToast(error, "error");
-      }
-      this.searching = false;
-    },
-    showToast(message, context) {
-      this.toast = { message, context, show: true };
-      setTimeout(() => {
-        this.toast = { message: "", context: "", show: false };
-      }, 3000);
+      this.$router.push({
+        name: "search",
+        query: { q: this.searchItem }
+      });
     },
 
     getSearchValue: function(searchValue) {
@@ -172,7 +100,8 @@ export default {
   },
   mounted() {
     //get  data for landing page
-    this.getData();
-  }
+    this.fetchData();
+  },
+  computed: mapGetters(["isLoading", "characters", "locations", "episodes"])
 };
 </script>

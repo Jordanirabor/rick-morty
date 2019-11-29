@@ -16,7 +16,9 @@
           Meanwhile, why don't you try again by going
         </div>
         <div class="button-wrapper">
-         <a href="/">  <input type="button" value="Back Home" class="home-button" /> </a>
+          <a href="/">
+            <input type="button" value="Back Home" class="home-button" />
+          </a>
         </div>
       </div>
     </div>

@@ -2,13 +2,17 @@
   <header class="header">
     <div>
       <a href="/" class="logo-link">
-        <img :src="require('@/assets/images/rickmorty-logo.png')" alt srcset />
+        <img
+          src="https://res.cloudinary.com/djalafcj9/image/upload/f_auto,fl_progressive/v1574951117/rickmorty-logo_jfohus.png"
+          alt
+          srcset
+        />
       </a>
     </div>
     <div class="hero-image__wrapper">
       <img
         class="hero-image"
-        :src="require('@/assets/images/rickmort-hero.png')"
+        src="https://res.cloudinary.com/djalafcj9/image/upload/f_auto/v1574951117/rickmort-hero_bpv8xd.png"
         alt
         srcset
       />
