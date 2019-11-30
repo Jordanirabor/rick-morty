@@ -7,12 +7,10 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    searchQuery: "",
     characters: [],
     locations: [],
     episodes: [],
-    searching: false,
-    isLoading: true,
+    loading: true,
     toast: {
       message: "",
       context: "",
@@ -29,9 +27,6 @@ export default new Vuex.Store({
     Locations(state, locations) {
       state.locations = locations;
     },
-    Searching(state, bool) {
-      state.searching = bool;
-    },
     Loading(state, bool) {
       state.loading = bool;
     },
@@ -40,7 +35,7 @@ export default new Vuex.Store({
     }
   },
   getters: {
-    isLoading: state => state.Loading,
+    isLoading: state => state.loading,
     characters: state => state.characters,
     episodes: state => state.episodes,
     locations: state => state.locations
@@ -73,32 +68,46 @@ export default new Vuex.Store({
         })
         .catch(response => {
           const message = response;
-          this.dispatch("showToast", message, "error");
+          this.$store.dispatch("showToast", message, "error");
         });
     },
+
     showToast({ commit }, message, context) {
       commit("Toast", { message, context, show: true });
       setTimeout(() => {
         commit("Toast", { message: " ", context: " ", show: false });
       }, 3000);
     },
-    async Search({ commit }) {
+
+    async Search({ commit }, searchItem) {
       commit("Loading", true);
+      console.log(searchItem);
       try {
         await Promise.all([
-          await http.get(`/character/?name=${this.searchItem}`),
-          await http.get(`/location/?name=${this.searchItem}`),
-          await http.get(`/episode/?name=${this.searchItem}`)
+          await http.get(`/character/?name=${searchItem}`),
+          await http.get(`/location/?name=${searchItem}`),
+          await http.get(`/episode/?name=${searchItem}`)
         ]).then(response => {
           const [characters, locations, episodes] = response;
-          commit("Characters", spliceData(characters.data.result));
-          commit("Locations", spliceData(locations.data.result));
-          commit("Episodes", spliceData(episodes.data.result));
-          this.dispatch("showToast", "Results found", "success");
+          const popularCharacters = characters.data.results;
+          const popularLocations = locations.data.results;
+          const popularEpisodes = episodes.data.results;
+
+          spliceData(popularCharacters);
+          spliceData(popularLocations);
+          spliceData(popularEpisodes);
+          console.log(popularCharacters);
+          commit("Characters", popularCharacters);
+          commit("Locations", popularLocations);
+          commit("Episodes", popularEpisodes);
+
+          commit("Loading", false);
+          // this.$store.dispatch("showToast", "Results found", "success");
         });
       } catch (error) {
         const message = error;
-        this.dispatch("showToast", message, "error");
+        console.log(message);
+        // this.$store.dispatch("showToast", message, "error");
       }
     }
   }

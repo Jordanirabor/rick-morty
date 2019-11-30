@@ -9,15 +9,14 @@
           v-if="toast.show"
         />
       </div>
-      <div class="search-result" v-if="searching"></div>
-      <div class="home-content__wrapper" v-else>
+      <div class="home-content__wrapper">
         <div class="items">
           <h1 class="items-title">Popular Characters</h1>
           <div class="underline"></div>
           <div class="loading" v-if="isLoading">
             <Loader />
           </div>
-          <Characters :characters="characters" />
+          <Characters :characters="characters" v-if="!isLoading" />
           <router-link to="/characters">
             <MoreButton />
           </router-link>
@@ -28,7 +27,7 @@
           <div class="loading" v-if="isLoading">
             <Loader />
           </div>
-          <Locations :locations="locations" />
+          <Locations :locations="locations" v-if="!isLoading" />
           <router-link to="/locations">
             <MoreButton />
           </router-link>
@@ -39,7 +38,7 @@
           <div class="loading" v-if="isLoading">
             <Loader />
           </div>
-          <Episodes :episodes="episodes" />
+          <Episodes :episodes="episodes" v-if="!isLoading" />
           <router-link to="/episodes">
             <MoreButton />
           </router-link>
@@ -59,7 +58,6 @@ export default {
   data() {
     return {
       searchItem: "",
-      searching: false,
       toast: {
         message: "",
         context: "",
@@ -86,15 +84,19 @@ export default {
   methods: {
     ...mapActions(["fetchData"]),
 
-    makeSearchRequest: async function() {
+    makeSearchRequest: function() {
       this.$router.push({
         name: "search",
         query: { q: this.searchItem }
       });
+      const searchQuery = this.searchItem;
+      this.$store.dispatch("Search", searchQuery);
+      // mapActions(["Search"], this.searchItem )
     },
 
     getSearchValue: function(searchValue) {
       this.searchItem = searchValue;
+
       this.makeSearchRequest();
     }
   },
@@ -103,5 +105,12 @@ export default {
     this.fetchData();
   },
   computed: mapGetters(["isLoading", "characters", "locations", "episodes"])
+  // watch: {
+  //   characters(newValue, oldValue) {
+  //     console.log(oldValue, newValue)
+
+  //   }
+
+  // },
 };
 </script>
