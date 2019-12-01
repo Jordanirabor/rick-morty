@@ -38,28 +38,36 @@ export default new Vuex.Store({
     isLoading: state => state.loading,
     characters: state => state.characters,
     episodes: state => state.episodes,
-    locations: state => state.locations
+    locations: state => state.locations,
+    toast: state => state.toast
   },
 
   actions: {
-    async fetchData({ commit }) {
+    showToast({ commit }, { message, context }) {
+      commit("Toast", { message: message, context: context, show: true });
+      setTimeout(() => {
+        commit("Toast", { message: " ", context: " ", show: false });
+      }, 3000);
+    },
+    async fetchData({ commit, dispatch }) {
       await Promise.all([
         http.get("/character/"),
         http.get("/location/"),
         http.get("/episode/")
       ])
         .then(response => {
-          // strip out unwanted data and reduce response to first 6 objects
-
           const [characters, locations, episodes] = response;
 
           const popularCharacters = characters.data.results;
           const popularLocations = locations.data.results;
           const popularEpisodes = episodes.data.results;
 
+          // strip out unwanted data and reduce response to first 6 objects
+
           spliceData(popularCharacters);
           spliceData(popularLocations);
           spliceData(popularEpisodes);
+
           commit("Characters", popularCharacters);
           commit("Locations", popularLocations);
           commit("Episodes", popularEpisodes);
@@ -68,20 +76,12 @@ export default new Vuex.Store({
         })
         .catch(response => {
           const message = response;
-          this.$store.dispatch("showToast", message, "error");
+          dispatch("showToast", { message: message, context: "error" });
         });
     },
 
-    showToast({ commit }, message, context) {
-      commit("Toast", { message, context, show: true });
-      setTimeout(() => {
-        commit("Toast", { message: " ", context: " ", show: false });
-      }, 3000);
-    },
-
-    async Search({ commit }, searchItem) {
+    async Search({ commit, dispatch }, searchItem) {
       commit("Loading", true);
-      console.log(searchItem);
       try {
         await Promise.all([
           await http.get(`/character/?name=${searchItem}`),
@@ -92,22 +92,26 @@ export default new Vuex.Store({
           const popularCharacters = characters.data.results;
           const popularLocations = locations.data.results;
           const popularEpisodes = episodes.data.results;
+          dispatch("showToast", {
+            message: "Results found",
+            context: "success"
+          });
+
+          // strip out unwanted data and reduce response to first 6 objects
 
           spliceData(popularCharacters);
           spliceData(popularLocations);
           spliceData(popularEpisodes);
-          console.log(popularCharacters);
+
           commit("Characters", popularCharacters);
           commit("Locations", popularLocations);
           commit("Episodes", popularEpisodes);
 
           commit("Loading", false);
-          // this.$store.dispatch("showToast", "Results found", "success");
         });
       } catch (error) {
         const message = error;
-        console.log(message);
-        // this.$store.dispatch("showToast", message, "error");
+        dispatch("showToast", { message: message, context: "error" });
       }
     }
   }

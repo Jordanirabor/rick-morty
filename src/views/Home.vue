@@ -57,12 +57,7 @@ export default {
   name: "Home",
   data() {
     return {
-      searchItem: "",
-      toast: {
-        message: "",
-        context: "",
-        show: false
-      }
+      searchItem: ""
     };
   },
   props: {
@@ -91,7 +86,6 @@ export default {
       });
       const searchQuery = this.searchItem;
       this.$store.dispatch("Search", searchQuery);
-      // mapActions(["Search"], this.searchItem )
     },
 
     getSearchValue: function(searchValue) {
@@ -104,13 +98,12 @@ export default {
     //get  data for landing page
     this.fetchData();
   },
-  computed: mapGetters(["isLoading", "characters", "locations", "episodes"])
-  // watch: {
-  //   characters(newValue, oldValue) {
-  //     console.log(oldValue, newValue)
-
-  //   }
-
-  // },
+  computed: mapGetters([
+    "isLoading",
+    "characters",
+    "locations",
+    "episodes",
+    "toast"
+  ])
 };
 </script>
