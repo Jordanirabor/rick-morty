@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="paginate-info">
-      <span>{{ from }} - {{ to }} of {{ pageInfo.count }}</span>
+      <!-- <span>{{ pageDetails.from }} - {{  pageDetails.to }} of {{ pageDetails.totalData }}</span> -->
       <Pagination :pageInfo="pageInfo" @changing="getAction" />
     </div>
 
@@ -28,7 +28,7 @@
   </div>
 </template>
 <script>
-import http from "@/utils/service";
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "CharacterView",
   components: {
@@ -42,19 +42,9 @@ export default {
   data() {
     return {
       searchItem: "",
-      isLoading: true,
-      characters: [],
       totalViewed: [],
       pageInfo: {},
-      currentPage: 1,
       perPage: 20,
-      from: 1,
-      to: "",
-      toast: {
-        show: false,
-        context: "",
-        message: ""
-      }
     };
   },
   props: {
@@ -64,96 +54,27 @@ export default {
     }
   },
   methods: {
-    showToast(message, context) {
-      this.toast = { message, context, show: true };
-      setTimeout(() => {
-        this.toast = { message: "", context: "", show: false };
-      }, 3000);
-    },
+    ...mapActions(["getAllData", "changePage"]),
+
     getAction: function(value) {
-      this.changePage(value);
+      this.changePage({ value: value, name: "character" });
     },
-    makeSearchRequest: async function() {
-      this.isLoading = true;
-      try {
-        await Promise.all([
-          await http.get(`/character/?name=${this.searchItem}`)
-        ]).then(response => {
-          const [characterResponse] = response;
-
-          const characterSearchResponse = characterResponse.data.results;
-          this.pageInfo = characterResponse.data.info;
-
-          this.characters = characterSearchResponse;
-          this.showToast("Results found", "success");
-        });
-      } catch (error) {
-        this.showToast(error, "error");
-      }
-      this.isLoading = false;
-    },
-    changePage: async function(value) {
-      switch (value) {
-        case "next":
-          this.currentPage = this.currentPage + 1;
-          this.from = this.to += 1;
-          this.to = this.to += this.perPage - 1;
-          if (this.to > this.pageInfo.count) {
-            this.from = this.from;
-            this.to = this.pageInfo.count;
-            this.showToast("End Of Info", "error");
-          }
-          break;
-        case "previous":
-          this.currentPage = this.currentPage - 1;
-          this.from = this.from - this.perPage;
-          this.to = this.to - this.perPage;
-
-          if (this.currentPage < 1) {
-            this.from = 1;
-            this.to = this.perPage;
-            this.showToast("Beginning Of Info", "error");
-          }
-          break;
-        default:
-          this.currentPage = value;
-      }
-      http
-        .get(
-          `https://rickandmortyapi.com/api/character/?page=${this.currentPage}`
-        )
-        .then(response => {
-          this.isLoading = false;
-          this.characters = response.data.results;
-          this.totalViewed.push(...this.characters);
-          this.pageInfo = response.data.info;
-        })
-        .catch(error => {
-          this.showToast(error, "error");
-        });
+    search: function() {
+      this.$store.dispatch("makeSearchRequest", {
+        name: "character",
+        searchValue: this.searchItem
+      });
     },
 
     getSearchValue: function(searchValue) {
       this.searchItem = searchValue;
-      this.makeSearchRequest();
+      this.search();
     }
   },
   async mounted() {
-    http
-      .get(`https://rickandmortyapi.com/api/character`)
-      .then(response => {
-        this.isLoading = false;
-        this.characters = response.data.results;
-        this.totalViewed.push(...this.characters);
-        const info = response.data.info;
-        this.pageInfo = { ...info };
-        this.to = this.perPage;
-      })
-      .catch(error => {
-        this.showToast(error, "error");
-      });
+    this.getAllData("character");
   },
-  computed: {}
+  computed: mapGetters(["characters", "isLoading", "toast", "pageDetails"])
 };
 </script>
 <style lang="scss" scoped></style>

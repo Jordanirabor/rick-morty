@@ -77,7 +77,7 @@ export default {
     Footer: () => import("@/components/Footer.vue")
   },
   methods: {
-    ...mapActions(["fetchData"]),
+    ...mapActions(["fetchPopularData"]),
 
     makeSearchRequest: function() {
       this.$router.push({
@@ -85,7 +85,7 @@ export default {
         query: { q: this.searchItem }
       });
       const searchQuery = this.searchItem;
-      this.$store.dispatch("Search", searchQuery);
+      this.$store.dispatch("searchPopularData", searchQuery);
     },
 
     getSearchValue: function(searchValue) {
@@ -96,7 +96,7 @@ export default {
   },
   mounted() {
     //get  data for landing page
-    this.fetchData();
+    this.fetchPopularData();
   },
   computed: mapGetters([
     "isLoading",
