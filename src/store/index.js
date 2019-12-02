@@ -53,7 +53,7 @@ export default new Vuex.Store({
     },
     setTotalPages(state, payload) {
       state.pageDetails.totalPages = payload;
-    },
+    }
     // changeTo(state, payload) {
     //   state.pageDetails.to += payload;
     // },
@@ -201,13 +201,10 @@ export default new Vuex.Store({
         dispatch("showToast", { message: message, context: "error" });
       }
     },
-    async changePage ( { state, commit, dispatch }, { value, name } ) {
-
-      
-      switch (  value) {
-        
+    async changePage({ state, commit, dispatch }, { value, name }) {
+      switch (value) {
         case "next":
-           dispatch("getAllData", name);
+          dispatch("getAllData", name);
           commit("currentPage", 1);
 
           // commit("changeTo", state.pageDetails.perPage);
@@ -215,7 +212,7 @@ export default new Vuex.Store({
           // commit("changeFrom", state.pageDetails.perPage);
 
           if (state.currentPage > state.pageDetails.totalPages) {
-            commit( "currentPage", -1 );
+            commit("currentPage", -1);
             // commit( "changeTo", state.pageDetails.perPage );
 
             dispatch("showToast", {
@@ -225,7 +222,7 @@ export default new Vuex.Store({
           }
           break;
         case "previous":
-          dispatch( "getAllData", name );
+          dispatch("getAllData", name);
           commit("currentPage", -1);
 
           if (state.currentPage < 1) {

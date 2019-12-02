@@ -28,7 +28,7 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "LocationView",
   components: {
@@ -40,8 +40,7 @@ export default {
     Footer: () => import("@/components/Footer.vue")
   },
   data() {
-    return {
-    };
+    return {};
   },
   props: {
     q: {

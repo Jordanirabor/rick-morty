@@ -28,8 +28,8 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex';
-mapGetters
+import { mapGetters, mapActions } from "vuex";
+mapGetters;
 export default {
   name: "EpisodeView",
   components: {
@@ -41,9 +41,7 @@ export default {
     Footer: () => import("@/components/Footer.vue")
   },
   data() {
-    return {
-
-    };
+    return {};
   },
   props: {
     q: {
@@ -51,7 +49,7 @@ export default {
       default: null
     }
   },
-   methods: {
+  methods: {
     ...mapActions(["getAllData", "changePage"]),
 
     getAction: function(value) {

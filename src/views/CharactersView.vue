@@ -44,7 +44,7 @@ export default {
       searchItem: "",
       totalViewed: [],
       pageInfo: {},
-      perPage: 20,
+      perPage: 20
     };
   },
   props: {
